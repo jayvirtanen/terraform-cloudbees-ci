@@ -1,5 +1,5 @@
 output "bastion_eip" {
-  value = aws_eip.this.address
+  value = aws_eip.this.public_ip
 }
 
 output "security_group_id" {
