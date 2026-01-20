@@ -102,7 +102,7 @@ module "vpc" {
     "kubernetes.io/role/internal-elb"             = "1"
   }
 
-  resource_prefix = var.cluster_name
+  resource_prefix = local.cluster_name
   vpc_tags        = local.vpc_tags
   zone_count      = var.zone_count
 }
