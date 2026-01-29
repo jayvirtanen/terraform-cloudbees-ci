@@ -1,3 +1,8 @@
+variable "admin_password" {
+  default = "prom-operator"
+  type    = string
+}
+
 variable "host_name" {
   type = string
 }

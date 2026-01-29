@@ -17,7 +17,10 @@ resource "helm_release" "this" {
 locals {
   values = yamlencode({
     grafana = {
+      adminPassword             = var.admin_password
       defaultDashboardsTimezone = "America/New_York"
+      enabled                   = true
+
       ingress = {
         annotations      = var.ingress_annotations
         enabled          = true
