@@ -1,11 +1,10 @@
 data "kubernetes_resource" "crd" {
   for_each   = var.create_service_monitors ? local.this : []
-  depends_on = [kubernetes_namespace.this]
+  depends_on = [kubernetes_namespace_v1.this]
 
   api_version = "apiextensions.k8s.io/v1"
   kind        = "CustomResourceDefinition"
 
-  // noinspection HCLUnknownBlockType
   metadata {
     name = "servicemonitors.monitoring.coreos.com"
   }
@@ -37,7 +36,7 @@ locals {
   values_yaml = yamldecode(var.values)
 }
 
-resource "kubernetes_namespace" "this" {
+resource "kubernetes_namespace_v1" "this" {
   for_each = var.manage_namespace ? local.this : []
 
   metadata {
@@ -46,7 +45,7 @@ resource "kubernetes_namespace" "this" {
 }
 
 resource "helm_release" "this" {
-  depends_on = [kubernetes_namespace.this]
+  depends_on = [kubernetes_namespace_v1.this]
 
   chart      = "cloudbees-core"
   name       = "cloudbees-ci"
@@ -56,9 +55,9 @@ resource "helm_release" "this" {
   version    = var.chart_version
 }
 
-resource "kubernetes_config_map" "casc_bundle" {
+resource "kubernetes_config_map_v1" "casc_bundle" {
   for_each   = local.create_bundle ? local.this : []
-  depends_on = [kubernetes_namespace.this]
+  depends_on = [kubernetes_namespace_v1.this]
 
   metadata {
     name      = local.config_map_name
@@ -68,9 +67,9 @@ resource "kubernetes_config_map" "casc_bundle" {
   data = var.bundle_data
 }
 
-resource "kubernetes_secret" "secrets" {
+resource "kubernetes_secret_v1" "secrets" {
   for_each   = local.create_secret ? local.this : []
-  depends_on = [kubernetes_namespace.this]
+  depends_on = [kubernetes_namespace_v1.this]
 
   metadata {
     name      = var.secret_name
@@ -80,8 +79,8 @@ resource "kubernetes_secret" "secrets" {
   data = var.secret_data
 }
 
-resource "kubernetes_role" "secrets" {
-  depends_on = [kubernetes_namespace.this]
+resource "kubernetes_role_v1" "secrets" {
+  depends_on = [kubernetes_namespace_v1.this]
   for_each   = var.create_secrets_role ? local.this : []
 
   metadata {
@@ -96,8 +95,8 @@ resource "kubernetes_role" "secrets" {
   }
 }
 
-resource "kubernetes_role_binding" "cjoc" {
-  depends_on = [kubernetes_namespace.this]
+resource "kubernetes_role_binding_v1" "cjoc" {
+  depends_on = [kubernetes_namespace_v1.this]
   for_each   = var.create_secrets_role ? local.this : []
 
   metadata {
@@ -118,8 +117,8 @@ resource "kubernetes_role_binding" "cjoc" {
   }
 }
 
-resource "kubernetes_role_binding" "jenkins" {
-  depends_on = [kubernetes_namespace.this]
+resource "kubernetes_role_binding_v1" "jenkins" {
+  depends_on = [kubernetes_namespace_v1.this]
   for_each   = var.create_secrets_role ? local.this : []
 
   metadata {

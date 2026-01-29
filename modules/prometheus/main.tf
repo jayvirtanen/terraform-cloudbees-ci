@@ -1,11 +1,11 @@
-resource "kubernetes_namespace" "this" {
+resource "kubernetes_namespace_v1" "this" {
   metadata {
     name = var.namespace
   }
 }
 
 resource "helm_release" "this" {
-  depends_on = [kubernetes_namespace.this]
+  depends_on = [kubernetes_namespace_v1.this]
 
   chart      = "kube-prometheus-stack"
   name       = var.release_name

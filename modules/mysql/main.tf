@@ -1,4 +1,4 @@
-resource "kubernetes_namespace" "this" {
+resource "kubernetes_namespace_v1" "this" {
   metadata {
     name = "mysql"
   }
@@ -12,20 +12,20 @@ resource "helm_release" "this" {
   values     = [local.helm_values]
   version    = var.chart_version
 
-  set {
-    name  = "auth.username"
-    value = var.user_name
-  }
-
-  set {
-    name  = "auth.password"
-    value = var.password
-  }
-
-  set {
-    name  = "auth.rootPassword"
-    value = var.root_password
-  }
+  set = [
+    {
+      name  = "auth.username"
+      value = var.user_name
+    },
+    {
+      name  = "auth.password"
+      value = var.password
+    },
+    {
+      name  = "auth.rootPassword"
+      value = var.root_password
+    }
+  ]
 }
 
 locals {

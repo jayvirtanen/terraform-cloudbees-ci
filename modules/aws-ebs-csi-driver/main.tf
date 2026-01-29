@@ -27,7 +27,7 @@ resource "aws_eks_addon" "this" {
   service_account_role_arn = module.service_account_role.iam_role_arn
 }
 
-resource "kubernetes_storage_class" "this" {
+resource "kubernetes_storage_class_v1" "this" {
   metadata {
     name = var.storage_class_name
   }

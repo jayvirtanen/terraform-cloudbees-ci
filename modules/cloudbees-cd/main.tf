@@ -1,4 +1,4 @@
-resource "kubernetes_namespace" "this" {
+resource "kubernetes_namespace_v1" "this" {
   for_each = var.manage_namespace ? local.this : []
 
   metadata {
@@ -6,7 +6,7 @@ resource "kubernetes_namespace" "this" {
   }
 }
 
-resource "kubernetes_secret" "this" {
+resource "kubernetes_secret_v1" "this" {
   for_each = local.has_license ? local.this : []
 
   metadata {
