@@ -160,16 +160,15 @@ module "eks" {
 
     (local.controllers_group_name) = {
       iam_role_name = local.controllers_role_name
-      labels = {
-        "jenkins" = "controller"
-      }
+      labels        = { "jenkins" = "controller" }
     }
 
     (local.agents_group_name) = {
+      capacity_type = "SPOT"
       iam_role_name = local.agents_role_name
-      labels = {
-        "jenkins" = "agent"
-      }
+      desired_size  = 0
+      labels        = { "jenkins" = "agent" }
+      min_size      = 0
     }
   }
 
