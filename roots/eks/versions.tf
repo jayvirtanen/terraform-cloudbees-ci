@@ -7,7 +7,7 @@ terraform {
     }
 
     helm = {
-      version = ">= 2.17.0, <3.0.0"
+      version = ">= 3.0.0"
     }
 
     http = {
@@ -15,7 +15,7 @@ terraform {
     }
 
     kubernetes = {
-      version = ">= 2.37.0"
+      version = ">= 3.0.0"
     }
 
     null = {
