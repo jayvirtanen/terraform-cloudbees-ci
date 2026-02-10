@@ -5,7 +5,7 @@ locals {
 
 module "aws_s3_backups" {
   source   = "terraform-aws-modules/s3-bucket/aws"
-  version  = "4.1.2"
+  version  = "5.10.0"
 
   bucket = local.bucket_name
 
@@ -39,11 +39,13 @@ module "aws_s3_backups" {
 }
 
 module "service_account_role" {
-  source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "5.28.0"
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
+  version = "6.4.0"
+
+  name            = local.role_name
+  use_name_prefix = true
 
   attach_velero_policy  = true
-  role_name_prefix      = local.role_name
   velero_s3_bucket_arns = [module.aws_s3_backups.s3_bucket_arn]
 
   oidc_providers = {
@@ -114,7 +116,7 @@ locals {
         create = true
         name   = var.service_account_name
         annotations = {
-          "eks.amazonaws.com/role-arn" : module.service_account_role.iam_role_arn
+          "eks.amazonaws.com/role-arn" : module.service_account_role.arn
         }
       }
     }

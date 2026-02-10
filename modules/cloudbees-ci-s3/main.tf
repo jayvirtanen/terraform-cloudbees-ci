@@ -1,6 +1,6 @@
 module "aws_s3_backups" {
   source   = "terraform-aws-modules/s3-bucket/aws"
-  version  = "4.1.2"
+  version  = "5.10.0"
 
   bucket = var.bucket_name
 

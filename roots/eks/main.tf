@@ -39,7 +39,7 @@ data "aws_ssm_parameter" "this" {
 
 locals {
   aws_account_id         = data.aws_caller_identity.current.account_id
-  aws_region             = data.aws_region.current.name
+  aws_region             = data.aws_region.current.region
   capacity_type          = var.use_spot_instances ? "SPOT" : "ON_DEMAND"
   cluster_auth_token     = data.aws_eks_cluster_auth.auth.token
   cluster_endpoint       = module.eks.cluster_endpoint
@@ -56,6 +56,23 @@ locals {
   controllers_role_name  = substr("${local.cluster_name}-controllers", 0, 38)
   default_group_name     = local.default_role_name
   default_role_name      = substr(local.cluster_name, 0, 38)
+
+  eks_managed_node_group_defaults = {
+    min_size     = (var.node_group_min < 0) ? 0 : var.node_group_min
+    max_size     = var.node_group_max
+    desired_size = (var.node_group_desired < 0) ? 0 : var.node_group_desired
+
+    capacity_type            = local.capacity_type
+    create_iam_role          = true
+    create_security_group    = false
+    iam_role_use_name_prefix = false
+    instance_types           = var.instance_types
+    key_name                 = var.key_name
+    labels                   = {}
+    launch_template_tags     = var.tags
+    metadata_options         = { http_put_response_hop_limit = 2 }
+    subnet_ids               = module.vpc.private_subnet_ids
+  }
 
   vpc_tags = {
     "kubernetes.io/cluster/${local.cluster_name}" = "shared"
@@ -128,65 +145,49 @@ module "bastion" {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "20.36.0"
+  version = "21.15.1"
 
-  cluster_name    = local.cluster_name
-  cluster_version = var.kubernetes_version
-  subnet_ids      = module.vpc.private_subnet_ids
-  vpc_id          = module.vpc.id
+  name               = local.cluster_name
+  kubernetes_version = var.kubernetes_version
+  subnet_ids         = module.vpc.private_subnet_ids
+  vpc_id             = module.vpc.id
 
   enable_cluster_creator_admin_permissions = true
 
   # Allow API access from your personal IP.
-  cluster_endpoint_public_access       = true
-  cluster_endpoint_public_access_cidrs = var.ssh_cidr_blocks
+  endpoint_public_access       = true
+  endpoint_public_access_cidrs = var.ssh_cidr_blocks
 
-  cluster_addons = {
-    eks-pod-identity-agent = {
-      most_recent = true
-    }
+  addons = {
+    coredns                = {}
+    eks-pod-identity-agent = { before_compute = true }
+    kube-proxy             = {}
+    vpc-cni                = { before_compute = true }
   }
 
-  cluster_upgrade_policy = {
+  upgrade_policy = {
     support_type = "STANDARD"
   }
 
   eks_managed_node_groups = {
-    (local.default_group_name) = {
+    (local.default_group_name) = merge(local.eks_managed_node_group_defaults, {
       desired_size  = 1
       iam_role_name = local.default_role_name
       min_size      = 1
-    }
+    })
 
-    (local.controllers_group_name) = {
+    (local.controllers_group_name) = merge(local.eks_managed_node_group_defaults, {
       iam_role_name = local.controllers_role_name
       labels        = { "jenkins" = "controller" }
-    }
+    })
 
-    (local.agents_group_name) = {
+    (local.agents_group_name) = merge(local.eks_managed_node_group_defaults, {
       capacity_type = "SPOT"
       iam_role_name = local.agents_role_name
       desired_size  = 0
       labels        = { "jenkins" = "agent" }
       min_size      = 0
-    }
-  }
-
-  eks_managed_node_group_defaults = {
-    min_size     = (var.node_group_min < 0) ? 0 : var.node_group_min
-    max_size     = var.node_group_max
-    desired_size = (var.node_group_desired < 0) ? 0 : var.node_group_desired
-
-    ami_type              = "AL2023_x86_64_STANDARD"
-    capacity_type         = local.capacity_type
-    create_iam_role       = true
-    create_security_group = false
-    iam_role_use_name_prefix = false
-    instance_types        = var.instance_types
-    key_name              = var.key_name
-    labels                = {}
-    launch_template_tags  = var.tags
-    subnet_ids            = module.vpc.private_subnet_ids
+    })
   }
 
   node_security_group_additional_rules = {

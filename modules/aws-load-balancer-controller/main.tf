@@ -10,18 +10,20 @@ locals {
     serviceAccount = {
       name = var.service_account_name
       annotations = {
-        "eks.amazonaws.com/role-arn": module.service_account_role.iam_role_arn
+        "eks.amazonaws.com/role-arn": module.service_account_role.arn
       }
     }
   })
 }
 
 module "service_account_role" {
-  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "5.60.0"
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
+  version = "6.4.0"
+
+  name            = local.role_name
+  use_name_prefix = true
 
   attach_load_balancer_controller_policy = true
-  role_name_prefix                       = local.role_name
 
   oidc_providers = {
     main = {
