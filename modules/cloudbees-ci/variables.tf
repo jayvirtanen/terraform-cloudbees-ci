@@ -5,6 +5,7 @@ variable "bundle_data" {
 
 variable "chart_repository" {
   default = "https://charts.cloudbees.com/public/cloudbees"
+  type    = string
 }
 
 variable "chart_version" {

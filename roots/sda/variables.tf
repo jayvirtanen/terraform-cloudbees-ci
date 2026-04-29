@@ -21,11 +21,6 @@ variable "bundle_dir" {
   type    = string
 }
 
-variable "ci_chart_repository" {
-  default = "https://charts.cloudbees.com/public/cloudbees"
-  type    = string
-}
-
 variable "ci_chart_version" {
   default = "3.36489.0+c2515fbfe235"
   type    = string
