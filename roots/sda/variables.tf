@@ -27,7 +27,7 @@ variable "ci_chart_repository" {
 }
 
 variable "ci_chart_version" {
-  default = "3.36070.0+4e3f1dc4a788"
+  default = "3.36489.0+c2515fbfe235"
   type    = string
 }
 
