@@ -22,7 +22,7 @@ variable "bundle_dir" {
 }
 
 variable "ci_chart_version" {
-  default = "3.36489.0+c2515fbfe235"
+  default = "3.36754.0+34f5d0bf1f18"
   type    = string
 }
 
