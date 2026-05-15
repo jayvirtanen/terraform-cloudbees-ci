@@ -4,13 +4,13 @@ locals {
   role_name   = substr(local.name_prefix, 0, 38)
 
   values = yamlencode({
-    clusterName = var.cluster_name
+    clusterName                = var.cluster_name
     createIngressClassResource = true
 
     serviceAccount = {
       name = var.service_account_name
       annotations = {
-        "eks.amazonaws.com/role-arn": module.service_account_role.arn
+        "eks.amazonaws.com/role-arn" : module.service_account_role.arn
       }
     }
   })

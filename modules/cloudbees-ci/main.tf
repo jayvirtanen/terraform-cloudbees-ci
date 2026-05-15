@@ -11,10 +11,10 @@ data "kubernetes_resource" "crd" {
 }
 
 locals {
-  config_map_name = lookup(lookup(lookup(local.values_yaml, "OperationsCenter", {}), "CasC", {}), "ConfigMapName", "oc-casc-bundle")
-  create_bundle = length(var.bundle_data) != 0
-  create_secret = length(var.secret_data) != 0
-  service_account_cjoc = lookup(lookup(local.values_yaml, "rbac", {}), "serviceAccountName", "cjoc")
+  config_map_name         = lookup(lookup(lookup(local.values_yaml, "OperationsCenter", {}), "CasC", {}), "ConfigMapName", "oc-casc-bundle")
+  create_bundle           = length(var.bundle_data) != 0
+  create_secret           = length(var.secret_data) != 0
+  service_account_cjoc    = lookup(lookup(local.values_yaml, "rbac", {}), "serviceAccountName", "cjoc")
   service_account_jenkins = lookup(lookup(local.values_yaml, "rbac", {}), "masterServiceAccountName", "jenkins")
 
   service_monitors = {
@@ -32,7 +32,7 @@ locals {
     }
   }
 
-  this = toset(["this"])
+  this        = toset(["this"])
   values_yaml = yamldecode(var.values)
 }
 
@@ -146,7 +146,7 @@ resource "kubernetes_manifest" "service_monitor" {
   manifest = {
     apiVersion = "monitoring.coreos.com/v1"
     kind       = "ServiceMonitor"
-    metadata   = {
+    metadata = {
       labels    = { release = "prometheus" }
       name      = each.key
       namespace = var.namespace

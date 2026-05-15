@@ -1,6 +1,6 @@
 module "aws_s3_backups" {
-  source   = "terraform-aws-modules/s3-bucket/aws"
-  version  = "5.10.0"
+  source  = "terraform-aws-modules/s3-bucket/aws"
+  version = "5.13.0"
 
   bucket = var.bucket_name
 
@@ -63,7 +63,7 @@ EOF
 }
 
 resource "aws_iam_role" "this" {
-  name = var.bucket_name
+  name               = var.bucket_name
   assume_role_policy = <<EOF
 {
     "Version": "2012-10-17",

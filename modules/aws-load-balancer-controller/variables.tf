@@ -1,5 +1,5 @@
 variable "chart_version" {
-  default = "3.0.0"
+  default = "3.3.0"
 }
 
 variable "cluster_name" {

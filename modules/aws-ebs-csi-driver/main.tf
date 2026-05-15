@@ -1,9 +1,9 @@
 locals {
-  name_prefix = "${var.cluster_name}_${var.release_name}"
-  namespace   = "kube-system"
-  role_name   = substr(local.name_prefix, 0, 38)
+  name_prefix     = "${var.cluster_name}_${var.release_name}"
+  namespace       = "kube-system"
+  role_name       = substr(local.name_prefix, 0, 38)
   service_account = "ebs-csi-controller-sa"
-  volume_tags = {for k, v in var.volume_tags: "tagSpecification_${k}" => "${k}=${v}"}
+  volume_tags     = { for k, v in var.volume_tags : "tagSpecification_${k}" => "${k}=${v}" }
 }
 
 module "service_account_role" {

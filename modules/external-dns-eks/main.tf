@@ -16,7 +16,7 @@ locals {
 
     serviceAccount = {
       annotations = {
-        "eks.amazonaws.com/role-arn": module.service_account_role.arn
+        "eks.amazonaws.com/role-arn" : module.service_account_role.arn
       }
 
       name = var.service_account_name
