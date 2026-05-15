@@ -22,7 +22,7 @@ data "aws_ssm_parameter" "this" {
 }
 
 module "vpc" {
-  source = "../../modules/vpc"
+  source          = "../../modules/vpc"
   resource_prefix = var.cluster_name
 }
 
@@ -68,10 +68,10 @@ module "bastion" {
 module "efs" {
   source = "../../modules/efs-file-system"
 
-  vpc_id                    = module.vpc.id
-  private_subnet_ids        = module.vpc.private_subnet_ids
-  resource_prefix           = var.cluster_name
-  source_security_group_id  = aws_security_group.cluster.id
+  vpc_id                   = module.vpc.id
+  private_subnet_ids       = module.vpc.private_subnet_ids
+  resource_prefix          = var.cluster_name
+  source_security_group_id = aws_security_group.cluster.id
 }
 
 resource "aws_security_group" "cluster" {

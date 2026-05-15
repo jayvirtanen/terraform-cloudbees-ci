@@ -17,13 +17,13 @@ locals {
   install_cdro    = alltrue([var.install_cdro, local.mysql_endpoint != ""])
   cd_license_data = fileexists(local.cd_license_file) ? file(local.cd_license_file) : ""
   cd_license_file = "${path.module}/${var.cd_license_file}"
-  cd_values      = fileexists(local.cd_values_file) ? file(local.cd_values_file) : null
-  cd_values_yaml = yamldecode(local.cd_values)
-  cd_values_file = "${path.module}/${var.cd_values_file}"
-  mysql_endpoint = var.install_mysql ? concat(module.mysql.*.dns_name, [""])[0] : lookup(lookup(local.cd_values_yaml, "database", {}), "clusterEndpoint", "")
-  mysql_values   = yamlencode({
-    database: {
-      clusterEndpoint: local.mysql_endpoint
+  cd_values       = fileexists(local.cd_values_file) ? file(local.cd_values_file) : null
+  cd_values_yaml  = yamldecode(local.cd_values)
+  cd_values_file  = "${path.module}/${var.cd_values_file}"
+  mysql_endpoint  = var.install_mysql ? concat(module.mysql.*.dns_name, [""])[0] : lookup(lookup(local.cd_values_yaml, "database", {}), "clusterEndpoint", "")
+  mysql_values = yamlencode({
+    database : {
+      clusterEndpoint : local.mysql_endpoint
     }
   })
 }
@@ -32,11 +32,11 @@ module "cloudbees_cd" {
   count  = local.install_cdro ? 1 : 0
   source = "../../modules/cloudbees-cd"
 
-  chart_version       = var.cd_chart_version
-  license_data        = local.cd_license_data
-  manage_namespace    = var.manage_cd_namespace
-  namespace           = var.cd_namespace
-  values              = [local.cd_values, local.mysql_values]
+  chart_version    = var.cd_chart_version
+  license_data     = local.cd_license_data
+  manage_namespace = var.manage_cd_namespace
+  namespace        = var.cd_namespace
+  values           = [local.cd_values, local.mysql_values]
 }
 
 

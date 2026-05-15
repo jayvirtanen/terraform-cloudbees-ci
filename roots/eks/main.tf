@@ -247,7 +247,7 @@ data "http" "eks" {
 }
 
 resource "time_sleep" "sleep" {
-  depends_on = [data.http.eks]
+  depends_on      = [data.http.eks]
   create_duration = "30s"
 }
 
@@ -284,10 +284,10 @@ module "workspace_caching" {
   for_each   = var.create_workspace_caching_bucket ? local.this : []
   source     = "../../modules/cloudbees-ci-s3"
 
-  bucket_name          = "${var.cluster_name}-workspace-cache"
-  cluster_name         = var.cluster_name
-  instance_role_name   = local.controllers_role_name
-  namespace            = var.ci_namespace
+  bucket_name        = "${var.cluster_name}-workspace-cache"
+  cluster_name       = var.cluster_name
+  instance_role_name = local.controllers_role_name
+  namespace          = var.ci_namespace
 }
 
 
