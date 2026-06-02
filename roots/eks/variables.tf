@@ -84,7 +84,7 @@ variable "install_velero" {
 }
 
 variable "instance_types" {
-  default = ["m5.xlarge", "m5a.xlarge", "m6a.xlarge", "m7a.xlarge"]
+  default = ["m5a.xlarge", "m6a.xlarge", "m7a.xlarge"]
   type    = set(string)
 }
 
@@ -94,7 +94,7 @@ variable "key_name" {
 }
 
 variable "kubernetes_version" {
-  default = "1.34"
+  default = "1.35"
   type    = string
 }
 
