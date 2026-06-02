@@ -33,11 +33,42 @@ module "service_account_role" {
   }
 }
 
+resource "null_resource" "gateway_api" {
+  provisioner "local-exec" {
+    command = <<EOF
+#Experimental Gateway API CRDs [OPTIONAL: Used for L4 Routes]
+kubectl apply --force-conflicts --server-side=true \
+    -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v${var.gateway_version}/experimental-install.yaml
+
+#Installation of LBC Gateway API specific CRDs
+kubectl apply \
+    -f https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/refs/heads/main/config/crd/gateway/gateway-crds.yaml
+EOF
+  }
+}
+
 resource "helm_release" "this" {
+  depends_on = [null_resource.gateway_api]
+
   chart      = "aws-load-balancer-controller"
   name       = var.release_name
   namespace  = local.namespace
   repository = "https://aws.github.io/eks-charts"
   values     = [local.values]
   version    = var.chart_version
+}
+
+resource "kubernetes_manifest" "gateway_class" {
+  depends_on = [helm_release.this]
+
+  manifest = {
+    apiVersion = "gateway.networking.k8s.io/v1beta1"
+    kind       = "GatewayClass"
+    metadata = {
+      name = var.gateway_class_name
+    }
+    spec = {
+      controllerName = "gateway.k8s.aws/alb"
+    }
+  }
 }
