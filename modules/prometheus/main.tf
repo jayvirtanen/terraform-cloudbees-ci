@@ -12,6 +12,7 @@ resource "helm_release" "this" {
   namespace  = var.namespace
   repository = "https://prometheus-community.github.io/helm-charts"
   values     = [local.values]
+  version    = var.chart_version
 }
 
 locals {
@@ -27,6 +28,10 @@ locals {
         extraPaths       = var.ingress_extra_paths
         hosts            = [var.host_name]
         ingressClassName = var.ingress_class_name
+      }
+
+      persistence = {
+        enabled = true
       }
     }
   })

@@ -3,6 +3,11 @@ variable "admin_password" {
   type    = string
 }
 
+variable "chart_version" {
+  default = "86.1.0"
+  type    = string
+}
+
 variable "host_name" {
   type = string
 }
