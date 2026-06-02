@@ -173,7 +173,7 @@ module "eks" {
     (local.default_group_name) = merge(local.eks_managed_node_group_defaults, {
       desired_size  = 1
       iam_role_name = local.default_role_name
-      min_size      = 1
+      min_size      = 0
     })
 
     (local.controllers_group_name) = merge(local.eks_managed_node_group_defaults, {
