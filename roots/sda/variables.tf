@@ -41,6 +41,11 @@ variable "ci_values_file" {
   type    = string
 }
 
+variable "create_gateway" {
+  default = false
+  type    = bool
+}
+
 variable "create_service_monitors" {
   default = false
   type    = bool

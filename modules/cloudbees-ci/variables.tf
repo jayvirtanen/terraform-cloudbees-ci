@@ -13,6 +13,11 @@ variable "chart_version" {
   type    = string
 }
 
+variable "create_gateway" {
+  default = false
+  type    = bool
+}
+
 variable "create_secrets_role" {
   default = false
   type    = bool
@@ -21,6 +26,20 @@ variable "create_secrets_role" {
 variable "create_service_monitors" {
   default = false
   type    = bool
+}
+
+variable "gateway_class_name" {
+  default = "aws-alb"
+  type    = string
+}
+
+variable "gateway_name" {
+  default = "cloudbees-ci"
+  type    = string
+}
+
+variable "host_name" {
+  type = string
 }
 
 variable "manage_namespace" {
@@ -58,6 +77,10 @@ variable "secret_name" {
 variable "secrets_role_name" {
   default = "jenkins-secrets"
   type    = string
+}
+
+variable "tags" {
+  type = map(string)
 }
 
 variable "values" {

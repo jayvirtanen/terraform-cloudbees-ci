@@ -48,8 +48,6 @@ locals {
   install_ci     = alltrue([var.install_ci, var.ci_host_name != ""])
   ci_values      = fileexists(local.ci_values_file) ? file(local.ci_values_file) : null
   ci_values_file = "${path.module}/${var.ci_values_file}"
-  groovy_data    = { for file in fileset(local.groovy_dir, "*.groovy") : file => file("${local.groovy_dir}/${file}") }
-  groovy_dir     = "${path.module}/${var.groovy_dir}"
   secret_data    = fileexists(var.secrets_file) ? yamldecode(file(var.secrets_file)) : {}
 }
 
@@ -58,11 +56,14 @@ module "cloudbees_ci" {
   source = "../../modules/cloudbees-ci"
 
   chart_version           = var.ci_chart_version
+  create_gateway          = var.create_gateway
   create_service_monitors = var.create_service_monitors
   create_secrets_role     = true
+  host_name               = var.ci_host_name
   manage_namespace        = var.manage_ci_namespace
   namespace               = var.ci_namespace
   secret_data             = local.secret_data
+  tags                    = var.tags
   values                  = local.ci_values
 }
 
