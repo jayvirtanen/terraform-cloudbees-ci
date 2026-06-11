@@ -30,8 +30,13 @@ locals {
         ingressClassName = var.ingress_class_name
       }
 
+      initChownData = {
+        enabled = false
+      }
+
       persistence = {
-        enabled = true
+        enabled          = true
+        storageClassName = var.storage_class_name
       }
     }
   })

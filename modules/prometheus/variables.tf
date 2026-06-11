@@ -33,3 +33,7 @@ variable "namespace" {
 variable "release_name" {
   default = "prometheus"
 }
+
+variable "storage_class_name" {
+  type = string
+}
