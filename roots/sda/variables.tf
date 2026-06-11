@@ -22,7 +22,7 @@ variable "bundle_dir" {
 }
 
 variable "ci_chart_version" {
-  default = "3.36754.0+34f5d0bf1f18"
+  default = "3.36984.0+814fd3fcf17b"
   type    = string
 }
 
@@ -49,11 +49,6 @@ variable "create_gateway" {
 variable "create_service_monitors" {
   default = false
   type    = bool
-}
-
-variable "groovy_dir" {
-  default = "groovy-init"
-  type    = string
 }
 
 variable "manage_ci_namespace" {
