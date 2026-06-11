@@ -33,22 +33,40 @@ module "service_account_role" {
   }
 }
 
-resource "null_resource" "gateway_api" {
-  provisioner "local-exec" {
-    command = <<EOF
-#Experimental Gateway API CRDs [OPTIONAL: Used for L4 Routes]
-kubectl apply --force-conflicts --server-side=true \
-    -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v${var.gateway_version}/experimental-install.yaml
+# Install Gateway API resource from manifests due to issue with Helm and the experimental releases
+data "http" "experimental" {
+  url = "https://github.com/kubernetes-sigs/gateway-api/releases/download/v${var.gateway_version}/experimental-install.yaml"
+}
 
-#Installation of LBC Gateway API specific CRDs
-kubectl apply \
-    -f https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/refs/heads/main/config/crd/gateway/gateway-crds.yaml
-EOF
-  }
+data "kubectl_file_documents" "experimental" {
+  content = data.http.experimental.response_body
+}
+
+resource "kubectl_manifest" "experimental" {
+  for_each = data.kubectl_file_documents.experimental.manifests
+
+  force_conflicts   = true
+  server_side_apply = true
+  yaml_body         = each.value
+}
+
+# Install Gateway API-specific CRDs for AWS LBC
+data "http" "lbc-gateway" {
+  url = "https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/refs/heads/main/config/crd/gateway/gateway-crds.yaml"
+}
+
+data "kubectl_file_documents" "lbc-gateway" {
+  content = data.http.lbc-gateway.response_body
+}
+
+resource "kubectl_manifest" "lbc-gateway" {
+  depends_on = [kubectl_manifest.experimental]
+  for_each   = data.kubectl_file_documents.lbc-gateway.manifests
+  yaml_body  = each.value
 }
 
 resource "helm_release" "this" {
-  depends_on = [null_resource.gateway_api]
+  depends_on = [kubectl_manifest.lbc-gateway]
 
   chart      = "aws-load-balancer-controller"
   name       = var.release_name
