@@ -2,7 +2,6 @@
 .terraform
 .env*
 !.env.example
-.terraform.lock.hcl
 *.crt
 *.key
 *.tfstate*
@@ -14,4 +13,5 @@ roots/sda/values/*.xml
 roots/sda/values/*.yaml
 roots/sda/oc-casc-bundle
 roots/traditional-ec2/values/*.properties
+scripts
 tfplan

@@ -39,7 +39,7 @@ variable "cidr_block" {
 }
 
 variable "cluster_autoscaler_tag" {
-  default = "v1.33.0"
+  default = "v1.34.2"
   type    = string
 }
 
@@ -84,7 +84,7 @@ variable "install_velero" {
 }
 
 variable "instance_types" {
-  default = ["m5.xlarge", "m5a.xlarge", "m6a.xlarge", "m7a.xlarge"]
+  default = ["m5a.xlarge", "m6a.xlarge", "m7a.xlarge"]
   type    = set(string)
 }
 
@@ -94,7 +94,7 @@ variable "key_name" {
 }
 
 variable "kubernetes_version" {
-  default = "1.33"
+  default = "1.35"
   type    = string
 }
 

@@ -1,3 +1,13 @@
+variable "admin_password" {
+  default = "prom-operator"
+  type    = string
+}
+
+variable "chart_version" {
+  default = "86.1.0"
+  type    = string
+}
+
 variable "host_name" {
   type = string
 }
@@ -22,4 +32,8 @@ variable "namespace" {
 
 variable "release_name" {
   default = "prometheus"
+}
+
+variable "storage_class_name" {
+  type = string
 }

@@ -3,7 +3,7 @@ provider "kubernetes" {
 }
 
 provider "helm" {
-  kubernetes {
+  kubernetes = {
     config_path = var.kubeconfig_file
   }
 }
@@ -17,13 +17,13 @@ locals {
   install_cdro    = alltrue([var.install_cdro, local.mysql_endpoint != ""])
   cd_license_data = fileexists(local.cd_license_file) ? file(local.cd_license_file) : ""
   cd_license_file = "${path.module}/${var.cd_license_file}"
-  cd_values      = fileexists(local.cd_values_file) ? file(local.cd_values_file) : null
-  cd_values_yaml = yamldecode(local.cd_values)
-  cd_values_file = "${path.module}/${var.cd_values_file}"
-  mysql_endpoint = var.install_mysql ? concat(module.mysql.*.dns_name, [""])[0] : lookup(lookup(local.cd_values_yaml, "database", {}), "clusterEndpoint", "")
-  mysql_values   = yamlencode({
-    database: {
-      clusterEndpoint: local.mysql_endpoint
+  cd_values       = fileexists(local.cd_values_file) ? file(local.cd_values_file) : null
+  cd_values_yaml  = yamldecode(local.cd_values)
+  cd_values_file  = "${path.module}/${var.cd_values_file}"
+  mysql_endpoint  = var.install_mysql ? concat(module.mysql.*.dns_name, [""])[0] : lookup(lookup(local.cd_values_yaml, "database", {}), "clusterEndpoint", "")
+  mysql_values = yamlencode({
+    database : {
+      clusterEndpoint : local.mysql_endpoint
     }
   })
 }
@@ -32,11 +32,11 @@ module "cloudbees_cd" {
   count  = local.install_cdro ? 1 : 0
   source = "../../modules/cloudbees-cd"
 
-  chart_version       = var.cd_chart_version
-  license_data        = local.cd_license_data
-  manage_namespace    = var.manage_cd_namespace
-  namespace           = var.cd_namespace
-  values              = [local.cd_values, local.mysql_values]
+  chart_version    = var.cd_chart_version
+  license_data     = local.cd_license_data
+  manage_namespace = var.manage_cd_namespace
+  namespace        = var.cd_namespace
+  values           = [local.cd_values, local.mysql_values]
 }
 
 
@@ -48,8 +48,6 @@ locals {
   install_ci     = alltrue([var.install_ci, var.ci_host_name != ""])
   ci_values      = fileexists(local.ci_values_file) ? file(local.ci_values_file) : null
   ci_values_file = "${path.module}/${var.ci_values_file}"
-  groovy_data    = { for file in fileset(local.groovy_dir, "*.groovy") : file => file("${local.groovy_dir}/${file}") }
-  groovy_dir     = "${path.module}/${var.groovy_dir}"
   secret_data    = fileexists(var.secrets_file) ? yamldecode(file(var.secrets_file)) : {}
 }
 
@@ -58,11 +56,14 @@ module "cloudbees_ci" {
   source = "../../modules/cloudbees-ci"
 
   chart_version           = var.ci_chart_version
+  create_gateway          = var.create_gateway
   create_service_monitors = var.create_service_monitors
   create_secrets_role     = true
+  host_name               = var.ci_host_name
   manage_namespace        = var.manage_ci_namespace
   namespace               = var.ci_namespace
   secret_data             = local.secret_data
+  tags                    = var.tags
   values                  = local.ci_values
 }
 

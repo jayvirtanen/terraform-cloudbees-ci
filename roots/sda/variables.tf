@@ -21,13 +21,8 @@ variable "bundle_dir" {
   type    = string
 }
 
-variable "ci_chart_repository" {
-  default = "https://charts.cloudbees.com/public/cloudbees"
-  type    = string
-}
-
 variable "ci_chart_version" {
-  default = "3.29360.0"
+  default = "3.36984.0+814fd3fcf17b"
   type    = string
 }
 
@@ -46,14 +41,14 @@ variable "ci_values_file" {
   type    = string
 }
 
-variable "create_service_monitors" {
+variable "create_gateway" {
   default = false
   type    = bool
 }
 
-variable "groovy_dir" {
-  default = "groovy-init"
-  type    = string
+variable "create_service_monitors" {
+  default = false
+  type    = bool
 }
 
 variable "manage_ci_namespace" {

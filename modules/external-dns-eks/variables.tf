@@ -3,7 +3,7 @@ variable "aws_account_id" {
 }
 
 variable "chart_version" {
-  default = "1.14.5"
+  default = "1.20.0"
 }
 
 variable "cluster_name" {

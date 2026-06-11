@@ -6,11 +6,13 @@ locals {
 }
 
 module "service_account_role" {
-  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "5.60.0"
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
+  version = "6.4.0"
+
+  name            = local.role_name
+  use_name_prefix = true
 
   attach_efs_csi_policy = true
-  role_name_prefix      = local.role_name
 
   oidc_providers = {
     main = {
@@ -32,10 +34,10 @@ module "efs_file_system" {
 resource "aws_eks_addon" "this" {
   addon_name               = "aws-efs-csi-driver"
   cluster_name             = var.cluster_name
-  service_account_role_arn = module.service_account_role.iam_role_arn
+  service_account_role_arn = module.service_account_role.arn
 }
 
-resource "kubernetes_storage_class" "this" {
+resource "kubernetes_storage_class_v1" "this" {
   metadata {
     name = var.storage_class_name
   }

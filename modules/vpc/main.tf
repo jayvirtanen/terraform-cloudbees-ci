@@ -9,7 +9,7 @@ data "aws_availability_zones" "available" {}
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "5.13.0"
+  version = "6.6.0"
 
   # VPC flow logs
   create_flow_log_cloudwatch_iam_role             = true

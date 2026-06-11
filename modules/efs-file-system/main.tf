@@ -27,7 +27,7 @@ resource "aws_efs_mount_target" "this" {
 
 resource "aws_iam_policy" "this" {
   name_prefix = "${var.resource_prefix}_EFS"
-  policy      = templatefile("${path.module}/policy.json.tftpl", {file_system_arn: aws_efs_file_system.this.arn})
+  policy      = templatefile("${path.module}/policy.json.tftpl", { file_system_arn : aws_efs_file_system.this.arn })
 }
 
 resource "aws_security_group" "this" {
