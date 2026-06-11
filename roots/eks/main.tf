@@ -354,6 +354,7 @@ module "prometheus" {
   ingress_annotations = local.alb_annotations
   ingress_class_name  = local.ingress_class_name
   ingress_extra_paths = [local.alb_redirect_path]
+  storage_class_name  = module.ebs_driver.storage_class_name
 }
 
 module "cluster_metrics" {
