@@ -6,16 +6,6 @@ variable "cluster_name" {
   type = string
 }
 
-variable "gateway_class_name" {
-  default = "aws-alb"
-  type    = string
-}
-
-variable "gateway_version" {
-  default = "1.5.1"
-  type    = string
-}
-
 variable "oidc_arn" {
   type = string
 }

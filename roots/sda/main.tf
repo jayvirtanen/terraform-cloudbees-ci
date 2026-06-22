@@ -56,7 +56,6 @@ module "cloudbees_ci" {
   source = "../../modules/cloudbees-ci"
 
   chart_version           = var.ci_chart_version
-  create_gateway          = var.create_gateway
   create_service_monitors = var.create_service_monitors
   create_secrets_role     = true
   host_name               = var.ci_host_name
