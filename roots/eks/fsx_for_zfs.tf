@@ -129,8 +129,8 @@ resource "kubernetes_storage_class_v1" "fsx_openzfs" {
 
   parameters = {
     ResourceType        = "volume"
-    ParentVolumeId      = module.fsx_openzfs.file_system_root_volume_id
-    DataCompressionType = "LZ4"
+    ParentVolumeId      = jsonencode(module.fsx_openzfs.file_system_root_volume_id)
+    DataCompressionType = jsonencode("LZ4")
     NfsExports = jsonencode([
       {
         ClientConfigurations = [
